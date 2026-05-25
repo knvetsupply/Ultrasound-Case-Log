@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="US Case Log"/>
+<title>US Case Log</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#F4F4F2;min-height:100vh}
+#app{padding-bottom:80px}
+.hdr{background:#fff;border-bottom:1px solid #E8E6DF;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.logo{width:38px;height:38px;border-radius:10px;background:#0F6E56;display:flex;align-items:center;justify-content:center;font-size:20px}
+.page{padding:14px 16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.stat{background:#fff;border-radius:12px;padding:10px 6px;text-align:center;border:1px solid #E8E6DF}
+.sv{font-size:22px;font-weight:700;color:#1C1C1A}
+.sl{font-size:10px;color:#8B8885;margin-top:2px}
+.card{background:#fff;border-radius:14px;border:1px solid #E8E6DF;padding:14px;margin-bottom:10px}
+.lbl{display:block;font-size:11px;font-weight:600;color:#8B8885;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+input,select,textarea{width:100%;background:#F8F8F6;border:1px solid #E0DED8;border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:#1C1C1A}
+textarea{resize:vertical;min-height:76px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mb{margin-bottom:10px}
+.srow{display:flex;gap:8px}
+.sbtn{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #E0DED8;background:#F8F8F6;color:#8B8885}
+.sbtn.N{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.sbtn.A{background:#FAECE7;border-color:#D85A30;color:#4A1B0C}
+.mrow{display:flex;gap:8px;margin-bottom:8px}
+.mbtn{flex:1;padding:10px;border-radius:10px;background:#E1F5EE;border:1px solid #1D9E75;color:#0F6E56;font-size:13px;font-weight:500;cursor:pointer}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tw{position:relative}
+.tw img{width:66px;height:66px;border-radius:8px;object-fit:cover;border:1px solid #E8E6DF;display:block;cursor:pointer}
+.trm{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#D85A30;color:#fff;border:none;cursor:pointer;font-size:11px;line-height:20px;text-align:center;padding:0}
+.btn-save{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:600;background:#0F6E56;color:#fff;border:none;cursor:pointer;margin-top:8px}
+.btn-clr{width:100%;padding:12px;border-radius:12px;font-size:14px;background:#fff;color:#6B6966;border:1px solid #E0DED8;cursor:pointer;margin-top:8px}
+.sb{position:relative;margin-bottom:8px}
+.sb input{padding-left:36px}
+.si{position:absolute;left:12px;top:50%;transform:translateY(-50%)}
+.frow{display:flex;gap:6px;margin-bottom:12px}
+.fc{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #E0DED8;background:#fff;color:#6B6966}
+.fc.on{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.fc.aon{background:#FAECE7;border-color:#D85A30;color:#4A1B0C}
+.dg{margin-bottom:14px}
+.dh{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#8B8885;border-bottom:1px solid #E8E6DF;padding-bottom:6px;margin-bottom:8px}
+.cc{background:#fff;border-radius:12px;border:1px solid #E8E6DF;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.cn{font-size:14px;font-weight:600;color:#1C1C1A}
+.ch{font-size:12px;color:#8B8885;margin-top:2px}
+.bdg{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.bdg.n{background:#E1F5EE;color:#085041}
+.bdg.a{background:#FAECE7;color:#4A1B0C}
+.ex{margin-top:10px;padding-top:10px;border-top:1px solid #E8E6DF}
+.ft{font-size:13px;color:#1C1C1A;line-height:1.5;margin-bottom:6px}
+.pb{background:#FAECE7;padding:7px 10px;border-radius:8px;font-size:12px;color:#4A1B0C;margin-bottom:8px}
+.db{font-size:12px;color:#D85A30;background:#FAECE7;border:none;padding:6px 12px;border-radius:8px;cursor:pointer}
+.or{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.on2{font-size:12px;width:110px;flex-shrink:0}
+.bt{flex:1;height:6px;background:#F0EEE8;border-radius:3px;overflow:hidden}
+.bf{height:100%;background:#0F6E56;border-radius:3px}
+.th2{display:grid;grid-template-columns:1.6fr .8fr .5fr .5fr;gap:4px;margin-bottom:6px}
+.tr2{display:grid;grid-template-columns:1.6fr .8fr .5fr .5fr;gap:4px;padding:7px 0;border-bottom:1px solid #F0EEE8}
+.thh{font-size:10px;font-weight:600;color:#8B8885;text-transform:uppercase}
+.tdd{font-size:12px}
+.tabs{display:flex;background:#fff;border-top:1px solid #E8E6DF;position:fixed;bottom:0;left:0;right:0;z-index:20}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:none;background:transparent;cursor:pointer;font-size:10px;font-weight:500;color:#8B8885}
+.tb.act{color:#0F6E56}
+.ti{font-size:22px}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0F6E56;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:500;z-index:100;white-space:nowrap;display:none}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:200;cursor:pointer}
+.lb img{max-width:95vw;max-height:90vh;border-radius:8px}
+.empty{text-align:center;padding:3rem 1rem;color:#8B8885;font-size:14px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div class="logo">🩺</div>
+    <div>
+      <div style="font-size:16px;font-weight:600;color:#1C1C1A">US Case Log</div>
+      <div style="font-size:11px;color:#8B8885">Ultrasound Case Tracker</div>
+    </div>
+  </div>
+  <div class="page" id="page"></div>
+  <div class="tabs">
+    <button class="tb act" id="tb-log" onclick="setTab('log')"><span class="ti">📝</span>บันทึก</button>
+    <button class="tb" id="tb-list" onclick="setTab('list')"><span class="ti">📋</span>เคสทั้งหมด</button>
+    <button class="tb" id="tb-sum" onclick="setTab('sum')"><span class="ti">📊</span>สรุป</button>
+  </div>
+</div>
+<input type="file" id="fi" accept="image/*,video/*" multiple style="display:none" onchange="onFiles(this)"/>
+<div class="toast" id="toast"></div>
+<div class="lb" id="lb" onclick="this.style.display='none'"><img id="lbi" src="" alt=""/></div>
+
+<script>
+var SPECIES=['สุนัข','แมว','กระต่าย','นก/สัตว์ปีก','สัตว์เลื้อยคลาน','อื่นๆ'];
+var ORGANS=['ช่องท้อง','ตับ','ไต','ม้าม','กระเพาะ','ลำไส้','มดลูก/รังไข่','ต่อมลูกหมาก','กระเพาะปัสสาวะ','หัวใจ','ปอด','ต่อมหมวกไต','อื่นๆ'];
+var tab='log', cases=[], files=[], status='normal', expanded=null, fStatus='';
+
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function pad(n){return n<10?'0'+n:''+n}
+function thaiDate(s){if(!s)return'';var p=s.split('-');var M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];return parseInt(p[2])+' '+M[parseInt(p[1])-1]+' '+(parseInt(p[0])+543)}
+function load(){try{cases=JSON.parse(localStorage.getItem('uc')||'[]')}catch(e){cases=[]}}
+function persist(){localStorage.setItem('uc',JSON.stringify(cases))}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(function(){t.style.display='none'},2500)}
+function lb(s){document.getElementById('lbi').src=s;document.getElementById('lb').style.display='flex'}
+
+function setTab(t){
+  tab=t;
+  ['log','list','sum'].forEach(function(x){document.getElementById('tb-'+x).className='tb'+(x===t?' act':'')});
+  render();
+}
+
+function setStatus(s){
+  status=s;
+  var bn=document.getElementById('bn');
+  var ba=document.getElementById('ba');
+  if(bn)bn.className='sbtn'+(s==='normal'?' N':'');
+  if(ba)ba.className='sbtn'+(s==='abnormal'?' A':'');
+}
+
+function pickFile(cam){
+  var fi=document.getElementById('fi');
+  if(cam){fi.setAttribute('capture','environment')}else{fi.removeAttribute('capture')}
+  fi.value='';fi.click();
+}
+
+function onFiles(inp){
+  for(var i=0;i<inp.files.length;i++){
+    (function(f){
+      var r=new FileReader();
+      r.onload=function(e){files.push({name:f.name,type:f.type,data:e.target.result});renderThumbs()};
+      r.readAsDataURL(f);
+    })(inp.files[i]);
+  }
+}
+
+function renderThumbs(){
+  var a=document.getElementById('ta');
+  if(!a)return;
+  var h='';
+  for(var i=0;i<files.length;i++){
+    h+='<div class="tw"><img src="'+files[i].data+'" onclick="lb(\''+files[i].data.replace(/'/g,"\\'")+'\')" alt=""/><button class="trm" onclick="rmFile('+i+')">✕</button></div>';
+  }
+  a.innerHTML=h;
+}
+
+function rmFile(i){files.splice(i,1);renderThumbs()}
+
+function saveCase(){
+  var name=document.getElementById('fn')?document.getElementById('fn').value.trim():'';
+  var hn=document.getElementById('fh')?document.getElementById('fh').value.trim():'';
+  if(!name||!hn){toast('⚠ กรุณากรอกชื่อและ HN');return}
+  var c={
+    id:Date.now(),
+    date:document.getElementById('fd').value||todayStr(),
+    name:name,hn:hn,
+    species:document.getElementById('fs').value,
+    organ:document.getElementById('fo').value,
+    status:status,
+    findings:document.getElementById('ff').value.trim(),
+    problems:document.getElementById('fp').value.trim(),
+    files:files.slice()
+  };
+  cases.unshift(c);persist();files=[];status='normal';toast('✓ บันทึกเคสเรียบร้อย');render();
+}
+
+function clearForm(){files=[];status='normal';render()}
+
+function delCase(id){
+  if(!confirm('ลบเคสนี้?'))return;
+  cases=cases.filter(function(c){return c.id!==id});
+  persist();render();
+}
+
+function toggleEx(id){expanded=expanded===id?null:id;render()}
+
+function setFilter(s){fStatus=s;render()}
+
+function statsHtml(){
+  var today=todayStr();
+  var tc=cases.filter(function(c){return c.date===today}).length;
+  var ac=cases.filter(function(c){return c.status==='abnormal'}).length;
+  var days={};cases.forEach(function(c){days[c.date]=1});
+  var dc=Object.keys(days).length;
+  var avg=dc?(cases.length/dc).toFixed(1):0;
+  return '<div class="stats"><div class="stat"><div class="sv">'+cases.length+'</div><div class="sl">ทั้งหมด</div></div><div class="stat"><div class="sv" style="color:#0F6E56">'+tc+'</div><div class="sl">วันนี้</div></div><div class="stat"><div class="sv" style="color:#D85A30">'+ac+'</div><div class="sl">Abnormal</div></div><div class="stat"><div class="sv">'+avg+'</div><div class="sl">เฉลี่ย/วัน</div></div></div>';
+}
+
+function speciesOpts(){return SPECIES.map(function(s){return'<option>'+s+'</option>'}).join('')}
+function organOpts(){return'<option value="">เลือกตำแหน่ง...</option>'+ORGANS.map(function(o){return'<option>'+o+'</option>'}).join('')}
+
+function renderLog(){
+  var h=statsHtml();
+  h+='<div class="card">';
+  h+='<div class="g2 mb"><div><label class="lbl">ชื่อสัตว์ป่วย *</label><input id="fn" placeholder="เช่น มะลิ"/></div><div><label class="lbl">HN *</label><input id="fh" placeholder="HN-0001"/></div></div>';
+  h+='<div class="g2 mb"><div><label class="lbl">ชนิดสัตว์</label><select id="fs">'+speciesOpts()+'</select></div><div><label class="lbl">วันที่</label><input type="date" id="fd" value="'+todayStr()+'"/></div></div>';
+  h+='<div class="mb"><label class="lbl">อวัยวะที่ Scan</label><select id="fo">'+organOpts()+'</select></div>';
+  h+='<div class="mb"><label class="lbl">ผลการตรวจ</label><div class="srow"><button class="sbtn N" id="bn" onclick="setStatus(\'normal\')">✓ Normal</button><button class="sbtn" id="ba" onclick="setStatus(\'abnormal\')">⚠ Abnormal</button></div></div>';
+  h+='<div class="mb"><label class="lbl">Findings / การวินิจฉัย</label><textarea id="ff" placeholder="บรรยาย findings..."></textarea></div>';
+  h+='<div class="mb"><label class="lbl">ปัญหาระหว่างทำ</label><textarea id="fp" placeholder="เช่น สัตว์ดิ้น, gas shadowing..." style="min-height:60px"></textarea></div>';
+  h+='<div class="mb"><label class="lbl">แนบรูป / วิดีโอ</label><div class="mrow"><button class="mbtn" onclick="pickFile(true)">📷 ถ่ายภาพ</button><button class="mbtn" onclick="pickFile(false)">🖼 เลือกจากคลัง</button></div><div class="thumbs" id="ta"></div></div>';
+  h+='<button class="btn-save" onclick="saveCase()">💾 บันทึกเคส</button>';
+  h+='<button class="btn-clr" onclick="clearForm()">ล้างฟอร์ม</button>';
+  h+='</div>';
+  return h;
+}
+
+function renderList(){
+  var sv=document.getElementById('sv-val')||null;
+  var search=sv?sv.value.toLowerCase():'';
+  var filtered=cases.filter(function(c){
+    if(fStatus&&c.status!==fStatus)return false;
+    if(search)return(c.name+c.hn+(c.findings||'')+(c.organ||'')).toLowerCase().indexOf(search)>=0;
+    return true;
+  });
+  var grouped={};
+  filtered.forEach(function(c){if(!grouped[c.date])grouped[c.date]=[];grouped[c.date].push(c)});
+  var dates=Object.keys(grouped).sort(function(a,b){return b>a?1:-1});
+
+  var chips=['','normal','abnormal'].map(function(s){
+    var cls='fc'+(fStatus===s?(s==='abnormal'?' aon':' on'):'');
+    var lbl=s===''?'ทั้งหมด':s==='normal'?'Normal':'Abnormal';
+    return'<button class="'+cls+'" onclick="setFilter(\''+s+'\')">'+lbl+'</button>';
+  }).join('');
+
+  var h=statsHtml();
+  h+='<div class="sb"><span class="si">🔍</span><input id="sv-val" placeholder="ค้นหาชื่อ, HN, findings..." oninput="softRender()" value="'+search+'"/></div>';
+  h+='<div class="frow">'+chips+'</div>';
+
+  if(!filtered.length){h+='<div class="empty">ไม่พบเคส</div>';return h}
+
+  dates.forEach(function(d){
+    h+='<div class="dg"><div class="dh"><span>📅 '+thaiDate(d)+'</span><span>'+grouped[d].length+' เคส</span></div>';
+    grouped[d].forEach(function(c){
+      var exp=expanded===c.id;
+      h+='<div class="cc" onclick="toggleEx('+c.id+')">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+      h+='<div><div class="cn">'+c.name+' <span style="font-size:12px;font-weight:400;color:#8B8885">('+c.species+')</span></div><div class="ch">HN: '+c.hn+'</div></div>';
+      h+='<div style="display:flex;align-items:center;gap:6px"><span class="bdg '+(c.status==='normal'?'n':'a')+'">'+(c.status==='normal'?'✓ Normal':'⚠ Abnormal')+'</span><span style="color:#8B8885;font-size:12px">'+(exp?'▲':'▼')+'</span></div>';
+      h+='</div>';
+      if(c.organ)h+='<div style="font-size:12px;color:#8B8885;margin-top:5px">🔬 '+c.organ+'</div>';
+      if(exp){
+        h+='<div class="ex">';
+        if(c.findings)h+='<div class="ft"><strong>Findings:</strong> '+c.findings+'</div>';
+        if(c.problems)h+='<div class="pb">⚠ '+c.problems+'</div>';
+        if(c.files&&c.files.length){
+          h+='<div class="thumbs" style="margin-bottom:8px">';
+          c.files.forEach(function(f){h+='<div class="tw"><img src="'+f.data+'" onclick="event.stopPropagation();lb(\''+f.data.replace(/'/g,"\\'")+'\')"/></div>'});
+          h+='</div>';
+        }
+        h+='<button class="db" onclick="event.stopPropagation();delCase('+c.id+')">🗑 ลบเคส</button>';
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  return h;
+}
+
+function renderSum(){
+  var h=statsHtml();
+  if(!cases.length){h+='<div class="empty">ยังไม่มีข้อมูล<br><br>เริ่มบันทึกเคสได้เลย</div>';return h}
+  var byDate={};
+  cases.forEach(function(c){
+    if(!byDate[c.date])byDate[c.date]={total:0,normal:0,abnormal:0};
+    byDate[c.date].total++;byDate[c.date][c.status]++;
+  });
+  var rows=Object.keys(byDate).sort(function(a,b){return b>a?1:-1}).map(function(d){return{d:d,r:byDate[d]}});
+  var maxT=Math.max.apply(null,rows.map(function(x){return x.r.total}));
+  var organs={};cases.forEach(function(c){if(c.organ)organs[c.organ]=(organs[c.organ]||0)+1});
+  var topO=Object.keys(organs).sort(function(a,b){return organs[b]-organs[a]}).slice(0,5);
+  var maxO=topO.length?organs[topO[0]]:1;
+
+  if(topO.length){
+    h+='<div class="card"><div style="font-size:14px;font-weight:600;color:#1C1C1A;margin-bottom:10px">อวัยวะที่ Scan บ่อย</div>';
+    topO.forEach(function(o){
+      h+='<div class="or"><div class="on2">'+o+'</div><div class="bt"><div class="bf" style="width:'+Math.round(organs[o]/maxO*100)+'%"></div></div><div style="font-size:12px;font-weight:600;color:#0F6E56;width:20px;text-align:right">'+organs[o]+'</div></div>';
+    });
+    h+='</div>';
+  }
+
+  h+='<div class="card"><div style="font-size:14px;font-weight:600;color:#1C1C1A;margin-bottom:10px">สรุปรายวัน</div>';
+  h+='<div class="th2"><div class="thh">วันที่</div><div class="thh">เคส</div><div class="thh">N</div><div class="thh">A</div></div>';
+  rows.forEach(function(x){
+    h+='<div class="tr2"><div class="tdd">'+thaiDate(x.d)+'</div><div class="tdd" style="display:flex;align-items:center;gap:4px"><div style="width:'+Math.round(x.r.total/maxT*36)+'px;height:6px;background:#1D9E75;border-radius:3px;min-width:4px"></div>'+x.r.total+'</div><div class="tdd" style="font-weight:600;color:#0F6E56">'+x.r.normal+'</div><div class="tdd" style="font-weight:600;color:#D85A30">'+x.r.abnormal+'</div></div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+function softRender(){
+  document.getElementById('page').innerHTML=renderList();
+}
+
+function render(){
+  var p=document.getElementById('page');
+  if(tab==='log')p.innerHTML=renderLog();
+  else if(tab==='list')p.innerHTML=renderList();
+  else p.innerHTML=renderSum();
+}
+
+load();render();
+</script>
+</body>
+</html>
