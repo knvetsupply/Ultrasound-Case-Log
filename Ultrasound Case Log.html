@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="US Case Log"/>
+<meta name="theme-color" content="#0F6E56"/>
+<title>US Case Log</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F8F8F6;min-height:100vh}
+input,select,textarea,button{font-family:inherit;font-size:14px;outline:none}
+.app{padding-bottom:90px}
+.header{background:#fff;border-bottom:0.5px solid #E8E6DF;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.logo{width:36px;height:36px;border-radius:10px;background:#0F6E56;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tabs{display:flex;background:#fff;border-top:0.5px solid #E8E6DF;position:fixed;bottom:0;left:0;right:0;z-index:20;padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;border:none;background:transparent;cursor:pointer;font-size:10px;font-weight:500;color:#8B8885;transition:color .15s}
+.tab.active{color:#0F6E56}
+.tab-icon{font-size:22px}
+.content{padding:14px 16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.stat{background:#F0EEE8;border-radius:12px;padding:10px 8px;text-align:center}
+.stat-val{font-size:22px;font-weight:700;color:#1C1C1A}
+.stat-val.green{color:#0F6E56}
+.stat-val.red{color:#D85A30}
+.stat-label{font-size:10px;color:#8B8885;margin-top:2px}
+.card{background:#fff;border-radius:14px;border:0.5px solid #E8E6DF;padding:14px;margin-bottom:10px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:11px;font-weight:600;color:#8B8885;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:#F8F8F6;border:0.5px solid #E0DED8;border-radius:10px;padding:10px 12px;color:#1C1C1A}
+.field textarea{resize:vertical;min-height:76px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.status-row{display:flex;gap:8px}
+.status-btn{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid #E0DED8;background:#F8F8F6;color:#8B8885;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.status-btn.normal-on{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.status-btn.abnormal-on{background:#FAECE7;border-color:#D85A30;color:#4A1B0C}
+.media-row{display:flex;gap:8px;margin-bottom:8px}
+.media-btn{flex:1;padding:10px;border-radius:10px;background:#E1F5EE;border:0.5px solid #1D9E75;color:#0F6E56;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumb-wrap{position:relative}
+.thumb-wrap img{width:68px;height:68px;border-radius:8px;object-fit:cover;border:0.5px solid #E8E6DF;cursor:pointer}
+.thumb-rm{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#D85A30;color:#fff;border:none;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
+.save-btn{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:600;background:#0F6E56;color:#fff;border:none;cursor:pointer;margin-top:8px}
+.clear-btn{width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:500;background:#fff;color:#6B6966;border:0.5px solid #E0DED8;cursor:pointer;margin-top:8px}
+.search-box{position:relative;margin-bottom:8px}
+.search-box input{width:100%;background:#fff;border:0.5px solid #E0DED8;border-radius:10px;padding:10px 12px 10px 36px;color:#1C1C1A}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#8B8885;font-size:14px}
+.filter-row{display:flex;gap:6px;margin-bottom:12px}
+.filter-chip{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #E0DED8;background:#fff;color:#6B6966}
+.filter-chip.on{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.filter-chip.abn-on{background:#FAECE7;border-color:#D85A30;color:#4A1B0C}
+.day-group{margin-bottom:16px}
+.day-header{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#8B8885;border-bottom:0.5px solid #E8E6DF;padding-bottom:6px;margin-bottom:8px}
+.case-card{background:#fff;border-radius:12px;border:0.5px solid #E8E6DF;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.case-name{font-size:14px;font-weight:600;color:#1C1C1A}
+.case-hn{font-size:12px;color:#8B8885;margin-top:2px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.n{background:#E1F5EE;color:#085041}
+.badge.a{background:#FAECE7;color:#4A1B0C}
+.expand-area{margin-top:10px;padding-top:10px;border-top:0.5px solid #E8E6DF}
+.findings-text{font-size:13px;color:#1C1C1A;line-height:1.5;margin-bottom:6px}
+.problem-box{background:#FAECE7;padding:7px 10px;border-radius:8px;font-size:12px;color:#4A1B0C;margin-bottom:8px}
+.del-btn{font-size:12px;color:#D85A30;background:#FAECE7;border:none;padding:6px 12px;border-radius:8px;cursor:pointer}
+.bar-track{flex:1;height:6px;background:#F0EEE8;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;background:#0F6E56;border-radius:3px}
+.organ-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.organ-name{font-size:12px;color:#1C1C1A;width:110px;flex-shrink:0}
+.organ-cnt{font-size:12px;font-weight:600;color:#0F6E56;width:20px;text-align:right}
+.table-header{display:grid;grid-template-columns:1.6fr 0.8fr 0.5fr 0.5fr;gap:4px;margin-bottom:6px}
+.table-row{display:grid;grid-template-columns:1.6fr 0.8fr 0.5fr 0.5fr;gap:4px;padding:7px 0;border-bottom:0.5px solid #F0EEE8}
+.th{font-size:10px;font-weight:600;color:#8B8885;text-transform:uppercase;letter-spacing:.4px}
+.td{font-size:12px;color:#1C1C1A}
+.td.grn{font-weight:600;color:#0F6E56}
+.td.red{font-weight:600;color:#D85A30}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0F6E56;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:500;z-index:100;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:200;cursor:pointer}
+.lightbox img{max-width:95vw;max-height:90vh;border-radius:8px;object-fit:contain}
+.empty{text-align:center;padding:3rem 1rem;color:#8B8885;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="header">
+    <div class="logo">🩺</div>
+    <div>
+      <div style="font-size:16px;font-weight:600;color:#1C1C1A">US Case Log</div>
+      <div style="font-size:11px;color:#8B8885">Ultrasound Case Tracker</div>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+  <div class="tabs">
+    <button class="tab active" id="tab-log" onclick="setTab('log')"><span class="tab-icon">📝</span>บันทึก</button>
+    <button class="tab" id="tab-list" onclick="setTab('list')"><span class="tab-icon">📋</span>เคสทั้งหมด</button>
+    <button class="tab" id="tab-summary" onclick="setTab('summary')"><span class="tab-icon">📊</span>สรุป</button>
+  </div>
+</div>
+<input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleFiles(this)"/>
+<div id="toast" style="display:none" class="toast"></div>
+<div id="lightbox" class="lightbox" style="display:none" onclick="document.getElementById('lightbox').style.display='none'"><img id="lb-img" src="" alt=""/></div>
+<script>
+const SPECIES=['สุนัข','แมว','กระต่าย','นก / สัตว์ปีก','สัตว์เลื้อยคลาน','อื่นๆ']
+const ORGANS=['ช่องท้อง','ตับ','ไต','ม้าม','กระเพาะ','ลำไส้','มดลูก / รังไข่','ต่อมลูกหมาก','กระเพาะปัสสาวะ','หัวใจ','ปอด','ต่อมหมวกไต','อื่นๆ']
+let cases=[], tab='log', files=[], status='normal', expandedId=null, filterStatus='', cameraMode=false
+const todayStr=()=>new Date().toISOString().split('T')[0]
+const thaiDate=s=>{if(!s)return'';const[y,m,d]=s.split('-');const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];return`${parseInt(d)} ${M[parseInt(m)-1]} ${parseInt(y)+543}`}
+function load(){try{cases=JSON.parse(localStorage.getItem('us_cases')||'[]')}catch{cases=[]}}
+function save(){localStorage.setItem('us_cases',JSON.stringify(cases))}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
+function setTab(t){tab=t;['log','list','summary'].forEach(x=>{document.getElementById('tab-'+x).className='tab'+(x===t?' active':'')});render()}
+function setStatus(s){status=s;document.getElementById('btn-normal').className='status-btn'+(s==='normal'?' normal-on':'');document.getElementById('btn-abnormal').className='status-btn'+(s==='abnormal'?' abnormal-on':'')}
+function pickMedia(cam){cameraMode=cam;const fi=document.getElementById('file-input');cam?fi.setAttribute('capture','environment'):fi.removeAttribute('capture');fi.value='';fi.click()}
+function handleFiles(inp){
+  Array.from(inp.files).forEach(f=>{
+    const r=new FileReader()
+    r.onload=e=>{files.push({name:f.name,type:f.type,data:e.target.result});renderThumbs()}
+    r.readAsDataURL(f)
+  })
+}
+function renderThumbs(){
+  const a=document.getElementById('thumb-area');if(!a)return
+  a.innerHTML=files.map((f,i)=>`<div class="thumb-wrap"><img src="${f.data}" onclick="openLightbox('${f.data}')" alt=""/><button class="thumb-rm" onclick="removeFile(${i})">✕</button></div>`).join('')
+}
+function removeFile(i){files.splice(i,1);renderThumbs()}
+function openLightbox(src){document.getElementById('lb-img').src=src;document.getElementById('lightbox').style.display='flex'}
+function saveCase(){
+  const name=document.getElementById('f-name')?.value.trim()
+  const hn=document.getElementById('f-hn')?.value.trim()
+  if(!name||!hn){showToast('⚠ กรุณากรอกชื่อและ HN');return}
+  cases.unshift({id:Date.now(),date:document.getElementById('f-date').value||todayStr(),name,hn,species:document.getElementById('f-species').value,organ:document.getElementById('f-organ').value,status,findings:document.getElementById('f-findings').value.trim(),problems:document.getElementById('f-problems').value.trim(),files:[...files]})
+  save();files=[];status='normal';showToast('✓ บันทึกเคสเรียบร้อย');render()
+}
+function clearForm(){status='normal';files=[];render()}
+function deleteCase(id){if(!confirm('ลบเคสนี้?'))return;cases=cases.filter(c=>c.id!==id);save();render()}
+function toggleExpand(id){expandedId=expandedId===id?null:id;render()}
+
+function renderStats(){
+  const today=todayStr(),todayCnt=cases.filter(c=>c.date===today).length,abnCnt=cases.filter(c=>c.status==='abnormal').length,days=new Set(cases.map(c=>c.date)).size,avg=days?(cases.length/days).toFixed(1):0
+  return`<div class="stats"><div class="stat"><div class="stat-val">${cases.length}</div><div class="stat-label">ทั้งหมด</div></div><div class="stat"><div class="stat-val green">${todayCnt}</div><div class="stat-label">วันนี้</div></div><div class="stat"><div class="stat-val red">${abnCnt}</div><div class="stat-label">Abnormal</div></div><div class="stat"><div class="stat-val">${avg}</div><div class="stat-label">เฉลี่ย/วัน</div></div></div>`
+}
+
+function renderLog(){
+  return`${renderStats()}<div class="card">
+  <div class="row2 field"><div><label>ชื่อสัตว์ป่วย *</label><input id="f-name" placeholder="เช่น มะลิ"/></div><div><label>HN *</label><input id="f-hn" placeholder="HN-0001"/></div></div>
+  <div class="row2 field"><div><label>ชนิดสัตว์</label><select id="f-species">${SPECIES.map(s=>`<option>${s}</option>`).join('')}</select></div><div><label>วันที่</label><input type="date" id="f-date" value="${todayStr()}"/></div></div>
+  <div class="field"><label>อวัยวะที่ Scan</label><select id="f-organ"><option value="">เลือกตำแหน่ง...</option>${ORGANS.map(o=>`<option>${o}</option>`).join('')}</select></div>
+  <div class="field"><label>ผลการตรวจ</label><div class="status-row"><button class="status-btn normal-on" id="btn-normal" onclick="setStatus('normal')">✓ Normal</button><button class="status-btn" id="btn-abnormal" onclick="setStatus('abnormal')">⚠ Abnormal</button></div></div>
+  <div class="field"><label>Findings / การวินิจฉัย</label><textarea id="f-findings" placeholder="บรรยาย findings..."></textarea></div>
+  <div class="field"><label>ปัญหาระหว่างทำ</label><textarea id="f-problems" placeholder="เช่น สัตว์ดิ้น, gas shadowing..." style="min-height:60px"></textarea></div>
+  <div class="field"><label>แนบรูป / วิดีโอ</label><div class="media-row"><button class="media-btn" onclick="pickMedia(true)">📷 ถ่ายภาพ</button><button class="media-btn" onclick="pickMedia(false)">🖼 เลือกจากคลัง</button></div><div class="thumbs" id="thumb-area"></div></div>
+  <button class="save-btn" onclick="saveCase()">💾 บันทึกเคส</button>
+  <button class="clear-btn" onclick="clearForm()">ล้างฟอร์ม</button>
+  </div>`
+}
+
+function renderList(){
+  const search=(document.getElementById('search-val')?.value||'').toLowerCase()
+  const filtered=cases.filter(c=>{if(filterStatus&&c.status!==filterStatus)return false;if(search)return(c.name+c.hn+c.findings+c.organ).toLowerCase().includes(search);return true})
+  const grouped={};filtered.forEach(c=>(grouped[c.date]=grouped[c.date]||[]).push(c))
+  const dates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a))
+  const chips=['','normal','abnormal'].map(s=>`<button class="filter-chip${filterStatus===s?(s==='abnormal'?' abn-on':' on'):''}" onclick="setFilter('${s}')">${s===''?'ทั้งหมด':s==='normal'?'Normal':'Abnormal'}</button>`).join('')
+  const caseCards=dates.map(d=>`<div class="day-group"><div class="day-header"><span>📅 ${thaiDate(d)}</span><span>${grouped[d].length} เคส</span></div>${grouped[d].map(c=>{
+    const exp=expandedId===c.id
+    return`<div class="case-card" onclick="toggleExpand(${c.id})"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="case-name">${c.name} <span style="font-size:12px;font-weight:400;color:#8B8885">(${c.species})</span></div><div class="case-hn">HN: ${c.hn}</div></div><div style="display:flex;align-items:center;gap:6px"><span class="badge ${c.status==='normal'?'n':'a'}">${c.status==='normal'?'✓ Normal':'⚠ Abnormal'}</span><span style="color:#8B8885">${exp?'▲':'▼'}</span></div></div>${c.organ?`<div style="font-size:12px;color:#8B8885;margin-top:5px">🔬 ${c.organ}</div>`:''
+    }${exp?`<div class="expand-area">${c.findings?`<div class="findings-text"><strong>Findings:</strong> ${c.findings}</div>`:''
+    }${c.problems?`<div class="problem-box">⚠ ${c.problems}</div>`:''
+    }${c.files?.length?`<div class="thumbs" style="margin-bottom:8px">${c.files.map(f=>`<div class="thumb-wrap"><img src="${f.data}" onclick="event.stopPropagation();openLightbox('${f.data}')" alt=""/></div>`).join('')}</div>`:''
+    }<button class="del-btn" onclick="event.stopPropagation();deleteCase(${c.id})">🗑 ลบเคส</button></div>`:''}</div>`
+  }).join('')}</div>`).join('')
+  return`${renderStats()}<div class="search-box"><span class="search-icon">🔍</span><input id="search-val" placeholder="ค้นหาชื่อ, HN, findings..." oninput="renderListOnly()" value="${document.getElementById('search-val')?.value||''}"/></div><div class="filter-row">${chips}</div>${filtered.length===0?'<div class="empty">ไม่พบเคส</div>':caseCards}`
+}
+
+function renderListOnly(){
+  const search=(document.getElementById('search-val')?.value||'').toLowerCase()
+  const filtered=cases.filter(c=>{if(filterStatus&&c.status!==filterStatus)return false;if(search)return(c.name+c.hn+c.findings+c.organ).toLowerCase().includes(search);return true})
+  const grouped={};filtered.forEach(c=>(grouped[c.date]=grouped[c.date]||[]).push(c))
+  const dates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a))
+  const listEl=document.getElementById('case-list-area')
+  if(!listEl)return
+  listEl.innerHTML=filtered.length===0?'<div class="empty">ไม่พบเคส</div>':dates.map(d=>`<div class="day-group"><div class="day-header"><span>📅 ${thaiDate(d)}</span><span>${grouped[d].length} เคส</span></div>${grouped[d].map(c=>{const exp=expandedId===c.id;return`<div class="case-card" onclick="toggleExpand(${c.id})"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="case-name">${c.name} <span style="font-size:12px;font-weight:400;color:#8B8885">(${c.species})</span></div><div class="case-hn">HN: ${c.hn}</div></div><div style="display:flex;align-items:center;gap:6px"><span class="badge ${c.status==='normal'?'n':'a'}">${c.status==='normal'?'✓ Normal':'⚠ Abnormal'}</span><span style="color:#8B8885">${exp?'▲':'▼'}</span></div></div>${c.organ?`<div style="font-size:12px;color:#8B8885;margin-top:5px">🔬 ${c.organ}</div>`:''
+  }${exp?`<div class="expand-area">${c.findings?`<div class="findings-text"><strong>Findings:</strong> ${c.findings}</div>`:''
+  }${c.problems?`<div class="problem-box">⚠ ${c.problems}</div>`:''
+  }${c.files?.length?`<div class="thumbs" style="margin-bottom:8px">${c.files.map(f=>`<div class="thumb-wrap"><img src="${f.data}" onclick="event.stopPropagation();openLightbox('${f.data}')" alt=""/></div>`).join('')}</div>`:''
+  }<button class="del-btn" onclick="event.stopPropagation();deleteCase(${c.id})">🗑 ลบเคส</button></div>`:''}</div>`}).join('')}</div>`).join('')
+}
+
+function setFilter(s){filterStatus=s;render()}
+
+function renderSummary(){
+  if(!cases.length)return`${renderStats()}<div class="empty">ยังไม่มีข้อมูล<br><br>เริ่มบันทึกเคสได้เลย</div>`
+  const byDate={};cases.forEach(c=>{if(!byDate[c.date])byDate[c.date]={total:0,normal:0,abnormal:0};byDate[c.date].total++;byDate[c.date][c.status]++})
+  const rows=Object.entries(byDate).sort((a,b)=>b[0].localeCompare(a[0]))
+  const maxTotal=Math.max(...rows.map(r=>r[1].total))
+  const organs={};cases.forEach(c=>{if(c.organ)organs[c.organ]=(organs[c.organ]||0)+1})
+  const topOrgans=Object.entries(organs).sort((a,b)=>b[1]-a[1]).slice(0,5)
+  const maxOrgan=topOrgans[0]?.[1]||1
+  return`${renderStats()}${topOrgans.length?`<div class="card"><div style="font-size:14px;font-weight:600;color:#1C1C1A;margin-bottom:10px">อวัยวะที่ Scan บ่อย</div>${topOrgans.map(([o,n])=>`<div class="organ-row"><div class="organ-name">${o}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/maxOrgan*100)}%"></div></div><div class="organ-cnt">${n}</div></div>`).join('')}</div>`:''
+  }<div class="card"><div style="font-size:14px;font-weight:600;color:#1C1C1A;margin-bottom:10px">สรุปรายวัน</div><div class="table-header"><div class="th">วันที่</div><div class="th">เคส</div><div class="th">N</div><div class="th">A</div></div>${rows.map(([d,r])=>`<div class="table-row"><div class="td">${thaiDate(d)}</div><div class="td" style="display:flex;align-items:center;gap:4px"><div style="width:${Math.round(r.total/maxTotal*36)}px;height:6px;background:#1D9E75;border-radius:3px;min-width:4px"></div>${r.total}</div><div class="td grn">${r.normal}</div><div class="td red">${r.abnormal}</div></div>`).join('')}</div>`
+}
+
+function render(){
+  const c=document.getElementById('content')
+  if(tab==='log'){c.innerHTML=renderLog()}
+  else if(tab==='list'){c.innerHTML=`<div>${renderList()}</div>`;const sa=document.createElement('div');sa.id='case-list-area';document.getElementById('content').appendChild(sa)}
+  else{c.innerHTML=renderSummary()}
+  if(tab==='list')renderListOnly()
+}
+
+load();render()
+</script>
+</body>
+</html>
